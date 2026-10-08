@@ -1,0 +1,41 @@
+<section class="reservation-page">
+  <header class="reservation-page__header">
+    <h1>Reservas</h1>
+    <p data-role="message" hidden></p>
+  </header>
+
+  <p class="reservation-page__empty" data-role="empty" hidden>No hay reservas.</p>
+
+  <div class="reservation-table-card">
+    <table class="reservation-table">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Cliente</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Servicio</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody data-role="rows"></tbody>
+    </table>
+  </div>
+
+  <template data-role="row-template">
+    <tr>
+      <td data-field="id"></td>
+      <td data-field="customerName"></td>
+      <td data-field="date"></td>
+      <td data-field="time"></td>
+      <td data-field="service"></td>
+      <td class="reservation-table__status">
+        <span class="status-badge" data-field="reservationStatus"></span>
+      </td>
+      <td class="reservation-table__actions">
+        <button type="button" data-action="cancel">Cancelar</button>
+      </td>
+    </tr>
+  </template>
+</section>

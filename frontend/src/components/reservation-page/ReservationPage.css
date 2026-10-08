@@ -1,0 +1,193 @@
+.reservation-page {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 36px 28px 56px;
+  text-align: left;
+}
+
+.reservation-page__header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.reservation-page__header p:not([hidden]) {
+  display: inline-flex;
+  margin: 14px 0 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--code-bg);
+  color: var(--text-h);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.reservation-page__empty:not([hidden]) {
+  margin: 20px 0 0;
+  padding: 36px 20px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.reservation-table-card {
+  margin-top: 22px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  box-shadow: var(--shadow);
+}
+
+.reservation-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+.reservation-table thead th {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--text-h) 4%, var(--bg));
+  color: var(--text);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.reservation-table tbody td {
+  padding: 15px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-h);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.reservation-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.reservation-table tbody tr:hover td {
+  background: color-mix(in srgb, var(--text-h) 3.5%, var(--bg));
+}
+
+.reservation-table tbody tr[data-status='CANCELADA'] td {
+  color: var(--text);
+}
+
+.reservation-table td[data-field='id'] {
+  width: 1%;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.reservation-table td[data-field='customerName'] {
+  font-weight: 600;
+}
+
+.reservation-table td[data-field='date'],
+.reservation-table td[data-field='time'] {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.reservation-table__status,
+.reservation-table__actions {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+.status-badge[data-status='ACTIVA'] {
+  background: #e5f6ec;
+  color: #0c7a43;
+}
+
+.status-badge[data-status='CANCELADA'] {
+  background: #f8e8e8;
+  color: #9f2f2f;
+}
+
+.reservation-table button[data-action='cancel'] {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 7px 12px;
+  background: #fdecec;
+  color: #9f2f2f;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.reservation-table button[data-action='cancel']:hover:not(:disabled) {
+  background: #9f2f2f;
+  color: #fff;
+}
+
+.reservation-table button[data-action='cancel']:focus-visible {
+  outline: 2px solid #9f2f2f;
+  outline-offset: 2px;
+}
+
+.reservation-table button[data-action='cancel']:disabled {
+  border-color: var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+@media (prefers-color-scheme: dark) {
+  .status-badge[data-status='ACTIVA'] {
+    background: rgba(52, 211, 153, 0.16);
+    color: #6ee7b7;
+  }
+
+  .status-badge[data-status='CANCELADA'] {
+    background: rgba(248, 113, 113, 0.16);
+    color: #fca5a5;
+  }
+
+  .reservation-table button[data-action='cancel'] {
+    background: rgba(248, 113, 113, 0.14);
+    color: #fca5a5;
+  }
+
+  .reservation-table button[data-action='cancel']:hover:not(:disabled) {
+    background: #b91c1c;
+    color: #fff;
+  }
+}
+
+@media (max-width: 720px) {
+  .reservation-page {
+    padding: 24px 16px 40px;
+  }
+
+  .reservation-page__header h1 {
+    font-size: 1.45rem;
+  }
+}
