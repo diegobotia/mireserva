@@ -1,0 +1,120 @@
+---
+description: Spring Boot + Java 25 best practices for mireserva (always apply)
+alwaysApply: true
+---
+
+# Spring Boot / Java 25 — mireserva
+
+Apply these conventions on every change in this project.
+
+## Project structure (current)
+
+```
+tdeareserva/
+└── mireserva/
+    ├── pom.xml                          # Spring Boot 4.x, JPA, WebMVC, PostgreSQL, springdoc
+    ├── src/main/java/com/tdea/mireserva/
+    │   ├── MireservaApplication.java
+    │   ├── controller/                  # REST controllers
+    │   ├── entity/                      # JPA entities
+    │   ├── repository/                  # Spring Data JPA repositories
+    │   ├── service/                     # Business logic
+    │   └── dto/                         # Request/Response DTOs (Java records) — create when needed
+    ├── src/main/resources/
+    │   ├── application.properties
+    │   ├── static/
+    │   └── templates/
+    └── src/test/java/com/tdea/mireserva/
+```
+
+Keep layers strict: `controller` → `service` → `repository`. Controllers never talk to repositories directly. Entities never leave the service layer as API payloads — map to/from DTOs.
+
+## Naming (English only)
+
+- Classes, methods, fields, packages, and constants: **English**.
+- Use clear domain names (`Reservation`, `findByUserId`, `startDate`).
+- Packages: lowercase (`com.tdea.mireserva.service`).
+- Classes: PascalCase. Methods/fields: camelCase. Constants: `UPPER_SNAKE_CASE`.
+
+## DTOs = Java records
+
+```java
+// ✅ GOOD
+public record ReservationRequest(Long roomId, LocalDate startDate, LocalDate endDate) {}
+
+public record ReservationResponse(Long id, String status, LocalDate startDate, LocalDate endDate) {}
+
+// ❌ BAD — mutable DTO classes with getters/setters
+```
+
+- Place DTOs under `com.tdea.mireserva.dto`.
+- Prefer compact constructors for validation when needed.
+- Do not expose JPA entities in controller request/response bodies.
+
+## Javadoc (required on every public method)
+
+Every `public` method must have up-to-date Javadoc: purpose, `@param`, `@return`, and `@throws` when relevant.
+
+```java
+/**
+ * Creates a new reservation for the given room and date range.
+ *
+ * @param request reservation data including room and dates
+ * @return the persisted reservation as a response DTO
+ * @throws IllegalArgumentException if the date range is invalid
+ */
+public ReservationResponse create(ReservationRequest request) { ... }
+```
+
+Update Javadoc whenever signature or behavior changes. Skip redundant Javadoc on trivial `record` accessors.
+
+## Java 25 practices
+
+- Prefer **records** for immutable data (DTOs, value objects).
+- Use **pattern matching** for `instanceof` / `switch` when it clarifies branching.
+- Prefer **virtual threads** for I/O-bound work (`spring.threads.virtual.enabled=true` when appropriate).
+- Prefer **ScopedValue** over `ThreadLocal` for request/tenant/context propagation.
+- Use **flexible constructor bodies** to validate before `super(...)` / `this(...)` when useful.
+- Prefer `Optional` only as return type for “may be absent”; never as fields or method parameters.
+- Prefer `var` only when the type is obvious from the right-hand side; otherwise keep explicit types.
+- Avoid preview/incubator APIs in production code.
+- Prefer constructor injection; make dependencies `final`. No field injection.
+- Prefer immutable collections (`List.of`, `Map.of`) when the collection must not change.
+
+## Spring Boot layering
+
+| Layer | Responsibility | Annotations |
+| --- | --- | --- |
+| `controller` | HTTP mapping, validation, status codes | `@RestController`, `@RequestMapping` |
+| `service` | Business rules, transactions | `@Service`, `@Transactional` |
+| `repository` | Persistence only | `JpaRepository` / `@Repository` |
+| `entity` | JPA mapping | `@Entity`, `@Table` |
+| `dto` | API contracts | `record` |
+
+- Use `@Valid` / Bean Validation on request DTOs.
+- Return `ResponseEntity` only when status/headers must vary; otherwise return the DTO and rely on defaults.
+- Centralize exception handling with `@RestControllerAdvice`.
+- Keep services focused; extract helpers when a class grows beyond a single responsibility.
+- Configure via `application.properties` / profiles; never hardcode secrets or environment URLs.
+
+## Persistence
+
+- Entities in `entity/`; repositories in `repository/`.
+- Prefer Spring Data derived queries or `@Query` with JPQL; avoid native SQL unless necessary.
+- Lazy associations by default; fetch joins only where needed to avoid N+1.
+- Do not use bidirectional relationships unless both sides are required.
+
+## Tests
+
+- Place tests under `src/test/java/com/tdea/mireserva/...` mirroring main packages.
+- Prefer unit tests for services; slice/integration tests (`@WebMvcTest`, `@DataJpaTest`) when touching HTTP or persistence.
+- Name tests in English: `shouldCreateReservationWhenDatesAreValid`.
+
+## Do not
+
+- Spanish identifiers in code.
+- Public methods without Javadoc.
+- Mutable DTO classes (use records).
+- Business logic in controllers or repositories.
+- Returning entities from REST endpoints.
+- Catch-and-ignore exceptions or empty `catch` blocks.
